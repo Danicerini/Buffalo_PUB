@@ -16,6 +16,10 @@ body{
     background-image: url("foto/foto_compagnia1.jpeg");
 }
 
+.active{
+    border: solid 1px #3bf32a;
+}
+
 table {
     width: 50%;
     margin: 20px auto;

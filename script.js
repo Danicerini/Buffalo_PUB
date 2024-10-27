@@ -1,6 +1,6 @@
 const correctPassword = "1234"; // Password per incrementare e decrementare i contatori
-const SUPABASE_URL = 'https://tkgflpqtwclwlvxjngne.supabase.co'; // Sostituisci con la tua URL di Supabase
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRrZ2ZscHF0d2Nsd2x2eGpuZ25lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzAwMjg3MjMsImV4cCI6MjA0NTYwNDcyM30.sqveiFpu_jjLPT_68Q9LFe-Qqy2Mc6ZUo4li65l6EeM'; // Sostituisci con la tua API Key di Supabase
+const SUPABASE_URL = 'https://tkgflpqtwclwlvxjngne.supabase.co'; // URL di Supabase
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRrZ2ZscHF0d2Nsd2x2eGpuZ25lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzAwMjg3MjMsImV4cCI6MjA0NTYwNDcyM30.sqveiFpu_jjLPT_68Q9LFe-Qqy2Mc6ZUo4li65l6EeM'; // API Key di Supabase
 const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // Funzione per richiedere la password e incrementare il contatore
@@ -10,13 +10,11 @@ function requestPasswordAndIncrement(id) {
         if (userPassword === correctPassword) {
             sessionStorage.setItem('isAuthorized', 'true'); // Salva l'autorizzazione per la sessione
             incrementCount(id);
-            updateRanking();
         } else {
             alert("Password incorrect.");
         }
     } else {
         incrementCount(id);
-        updateRanking();
     }
 }
 
@@ -27,13 +25,11 @@ function requestPasswordAndDecrement(id) {
         if (userPassword === correctPassword) {
             sessionStorage.setItem('isAuthorized', 'true'); // Salva l'autorizzazione per la sessione
             decrementCount(id);
-            updateRanking();
         } else {
             alert("Password incorrect.");
         }
     } else {
         decrementCount(id);
-        updateRanking();
     }
 }
 
@@ -85,11 +81,12 @@ async function loadCounts() {
 
 // Funzione per salvare i contatori nel database Supabase
 async function saveCounts() {
-    document.querySelectorAll('td[data-id]').forEach(async (td) => {
+    for (const td of document.querySelectorAll('td[data-id]')) {
         const id = td.getAttribute('data-id');
         const count = parseInt(td.innerText);
+        console.log(`Saving count for ID: ${id}, Count: ${count}`); // Log per debug
         await updateRecord(id, count);
-    });
+    }
 }
 
 // Funzione per aggiornare i record nel database Supabase
@@ -119,22 +116,18 @@ function updateRanking() {
     rows.forEach((row, index) => {
         row.querySelector('td:first-child').innerText = index + 1; // Aggiorna il numero di classifica
         // Mantieni i colori fissi
+        row.classList.remove('gold', 'silver', 'bronze', 'green');
         if (index === 0) {
             row.classList.add('gold');
-            row.classList.remove('silver', 'bronze', 'green');
         } else if (index === 1) {
             row.classList.add('silver');
-            row.classList.remove('gold', 'bronze', 'green');
         } else if (index === 2) {
             row.classList.add('bronze');
-            row.classList.remove('gold', 'silver', 'green');
         } else {
             row.classList.add('green');
-            row.classList.remove('gold', 'silver', 'bronze');
         }
     });
 
     // Aggiungi le righe riordinate di nuovo al body della tabella
     rows.forEach(row => tableBody.appendChild(row));
 }
-s
