@@ -14,6 +14,11 @@ body{
 
 .Body_counter{
     background-image: url("foto/foto_compagnia1.jpeg");
+    display: flex;
+    flex-direction: column;
+    background-position: center;
+    background-attachment: fixed;
+    background-size: cover;
 }
 
 .active{
