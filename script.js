@@ -1,4 +1,7 @@
 const correctPassword = "1234"; // Password per incrementare e decrementare i contatori
+const SUPABASE_URL = 'https://tkgflpqtwclwlvxjngne.supabase.co'; // Sostituisci con la tua URL di Supabase
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRrZ2ZscHF0d2Nsd2x2eGpuZ25lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzAwMjg3MjMsImV4cCI6MjA0NTYwNDcyM30.sqveiFpu_jjLPT_68Q9LFe-Qqy2Mc6ZUo4li65l6EeM'; // Sostituisci con la tua API Key di Supabase
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // Funzione per richiedere la password e incrementare il contatore
 function requestPasswordAndIncrement(id) {
@@ -40,7 +43,7 @@ function incrementCount(id) {
     let currentCount = parseInt(countElement.innerText);
     currentCount++;
     countElement.innerText = currentCount;
-    saveCounts(); // Salva i contatori nel file JSON
+    saveCounts(); // Salva i contatori nel database Supabase
 }
 
 // Funzione per decrementare il contatore
@@ -50,56 +53,56 @@ function decrementCount(id) {
     if (currentCount > 0) {
         currentCount--;
         countElement.innerText = currentCount;
-        saveCounts(); // Salva i contatori nel file JSON
+        saveCounts(); // Salva i contatori nel database Supabase
     }
 }
 
 // Carica i valori dei contatori e aggiorna la classifica all'avvio della pagina
 document.addEventListener('DOMContentLoaded', () => {
-    loadCounts(); // Carica i contatori dal file JSON
+    loadCounts(); // Carica i contatori dal database Supabase
 });
 
-// Funzione per caricare i contatori dal file JSON
-function loadCounts() {
-    fetch('counter.json')
-        .then(response => response.json())
-        .then(data => {
-            const counters = data.counters;
-            for (const id in counters) {
-                const countElement = document.querySelector(`td[data-id="${id}"]`);
-                if (countElement) {
-                    countElement.innerText = counters[id];
-                }
-            }
-            updateRanking(); // Aggiorna la classifica dopo il caricamento
-        })
-        .catch(error => console.error('Error loading counter data:', error));
+// Funzione per caricare i contatori dal database Supabase
+async function loadCounts() {
+    const { data, error } = await supabase
+        .from('counters') // Sostituisci con il nome della tua tabella
+        .select('*');
+
+    if (error) {
+        console.error('Error loading counter data:', error);
+        return;
+    }
+
+    data.forEach(record => {
+        const id = record.id; // Assumendo che 'id' sia la chiave primaria
+        const countElement = document.querySelector(`td[data-id="${id}"]`);
+        if (countElement) {
+            countElement.innerText = record.count || 0; // Sostituisci con il nome del campo conteggio
+        }
+    });
+    updateRanking(); // Aggiorna la classifica dopo il caricamento
 }
 
-// Funzione per salvare i contatori nel file JSON
-function saveCounts() {
-    const counters = {};
-    document.querySelectorAll('td[data-id]').forEach(td => {
-        counters[td.getAttribute('data-id')] = parseInt(td.innerText);
+// Funzione per salvare i contatori nel database Supabase
+async function saveCounts() {
+    document.querySelectorAll('td[data-id]').forEach(async (td) => {
+        const id = td.getAttribute('data-id');
+        const count = parseInt(td.innerText);
+        await updateRecord(id, count);
     });
+}
 
-    const data = { counters };
+// Funzione per aggiornare i record nel database Supabase
+async function updateRecord(id, count) {
+    const { error } = await supabase
+        .from('counters') // Sostituisci con il nome della tua tabella
+        .upsert({ id: id, count: count }); // Assumendo che 'count' sia il nome del campo conteggio
 
-    // Invio i dati a un server per salvarli
-    fetch('save_counter.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        console.log('Counter data saved successfully');
-    })
-    .catch(error => console.error('Error saving counter data:', error));
+    if (error) {
+        console.error('Error saving counter data:', error);
+    } else {
+        console.log(`Counter ${id} updated successfully`);
+    }
 }
 
 // Funzione per aggiornare la classifica
@@ -134,3 +137,4 @@ function updateRanking() {
     // Aggiungi le righe riordinate di nuovo al body della tabella
     rows.forEach(row => tableBody.appendChild(row));
 }
+s
