@@ -34,22 +34,22 @@ function requestPasswordAndDecrement(id) {
 }
 
 // Funzione per incrementare il contatore
-function incrementCount(id) {
+async function incrementCount(id) {
     const countElement = document.querySelector(`td[data-id="${id}"]`);
     let currentCount = parseInt(countElement.innerText);
     currentCount++;
     countElement.innerText = currentCount;
-    saveCounts(); // Salva i contatori nel database Supabase
+    await saveCounts(id, currentCount); // Salva i contatori nel database Supabase
 }
 
 // Funzione per decrementare il contatore
-function decrementCount(id) {
+async function decrementCount(id) {
     const countElement = document.querySelector(`td[data-id="${id}"]`);
     let currentCount = parseInt(countElement.innerText);
     if (currentCount > 0) {
         currentCount--;
         countElement.innerText = currentCount;
-        saveCounts(); // Salva i contatori nel database Supabase
+        await saveCounts(id, currentCount); // Salva i contatori nel database Supabase
     }
 }
 
@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // Funzione per caricare i contatori dal database Supabase
 async function loadCounts() {
     const { data, error } = await supabase
-        .from('counters') // Sostituisci con il nome della tua tabella
+        .from('counters') // Nome della tua tabella
         .select('*');
 
     if (error) {
@@ -70,30 +70,20 @@ async function loadCounts() {
     }
 
     data.forEach(record => {
-        const id = record.id; // Assumendo che 'id' sia la chiave primaria
+        const id = record.ID; // Assumendo che 'ID' sia la chiave primaria
         const countElement = document.querySelector(`td[data-id="${id}"]`);
         if (countElement) {
-            countElement.innerText = record.count || 0; // Sostituisci con il nome del campo conteggio
+            countElement.innerText = record.Conteggio || 0; // Sostituisci con il nome del campo conteggio
         }
     });
     updateRanking(); // Aggiorna la classifica dopo il caricamento
 }
 
 // Funzione per salvare i contatori nel database Supabase
-async function saveCounts() {
-    for (const td of document.querySelectorAll('td[data-id]')) {
-        const id = td.getAttribute('data-id');
-        const count = parseInt(td.innerText);
-        console.log(`Saving count for ID: ${id}, Count: ${count}`); // Log per debug
-        await updateRecord(id, count);
-    }
-}
-
-// Funzione per aggiornare i record nel database Supabase
-async function updateRecord(id, count) {
+async function saveCounts(id, count) {
     const { error } = await supabase
-        .from('counters') // Sostituisci con il nome della tua tabella
-        .upsert({ id: id, count: count }); // Assumendo che 'count' sia il nome del campo conteggio
+        .from('counters') // Nome della tua tabella
+        .upsert({ ID: id, Conteggio: count }); // Nome del campo conteggio
 
     if (error) {
         console.error('Error saving counter data:', error);
@@ -116,15 +106,18 @@ function updateRanking() {
     rows.forEach((row, index) => {
         row.querySelector('td:first-child').innerText = index + 1; // Aggiorna il numero di classifica
         // Mantieni i colori fissi
-        row.classList.remove('gold', 'silver', 'bronze', 'green');
         if (index === 0) {
             row.classList.add('gold');
+            row.classList.remove('silver', 'bronze', 'green');
         } else if (index === 1) {
             row.classList.add('silver');
+            row.classList.remove('gold', 'bronze', 'green');
         } else if (index === 2) {
             row.classList.add('bronze');
+            row.classList.remove('gold', 'silver', 'green');
         } else {
             row.classList.add('green');
+            row.classList.remove('gold', 'silver', 'bronze');
         }
     });
 
