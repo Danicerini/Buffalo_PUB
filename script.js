@@ -1,7 +1,10 @@
 const correctPassword = "1234"; // Password per incrementare e decrementare i contatori
 const SUPABASE_URL = 'https://tkgflpqtwclwlvxjngne.supabase.co'; // URL di Supabase
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRrZ2ZscHF0d2Nsd2x2eGpuZ25lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzAwMjg3MjMsImV4cCI6MjA0NTYwNDcyM30.sqveiFpu_jjLPT_68Q9LFe-Qqy2Mc6ZUo4li65l6EeM'; // API Key di Supabase
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// Inizializza il client Supabase
+const { createClient } = supabase;
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // Funzione per richiedere la password e incrementare il contatore
 function requestPasswordAndIncrement(id) {
