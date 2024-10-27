@@ -7,11 +7,13 @@ function requestPasswordAndIncrement(id) {
         if (userPassword === correctPassword) {
             sessionStorage.setItem('isAuthorized', 'true'); // Salva l'autorizzazione per la sessione
             incrementCount(id);
+            updateRanking();
         } else {
             alert("Password incorrect.");
         }
     } else {
         incrementCount(id);
+        updateRanking();
     }
 }
 
@@ -22,11 +24,13 @@ function requestPasswordAndDecrement(id) {
         if (userPassword === correctPassword) {
             sessionStorage.setItem('isAuthorized', 'true'); // Salva l'autorizzazione per la sessione
             decrementCount(id);
+            updateRanking();
         } else {
             alert("Password incorrect.");
         }
     } else {
         decrementCount(id);
+        updateRanking();
     }
 }
 
@@ -36,7 +40,7 @@ function incrementCount(id) {
     let currentCount = parseInt(countElement.innerText);
     currentCount++;
     countElement.innerText = currentCount;
-    saveCounts(); // Salva i contatori nel localStorage
+    localStorage.setItem(id, currentCount);
 }
 
 // Funzione per decrementare il contatore
@@ -46,32 +50,50 @@ function decrementCount(id) {
     if (currentCount > 0) {
         currentCount--;
         countElement.innerText = currentCount;
-        saveCounts(); // Salva i contatori nel localStorage
+        localStorage.setItem(id, currentCount);
     }
 }
 
-// Carica i valori dei contatori all'avvio della pagina
+// Carica i valori dei contatori e aggiorna la classifica all'avvio della pagina
 document.addEventListener('DOMContentLoaded', () => {
-    loadCounts(); // Carica i contatori dal localStorage
+    document.querySelectorAll('td[data-id]').forEach(td => {
+        const savedCount = localStorage.getItem(td.getAttribute('data-id'));
+        if (savedCount) {
+            td.innerText = savedCount;
+        }
+    });
+    updateRanking();
 });
 
-// Funzione per caricare i contatori dal localStorage
-function loadCounts() {
-    for (let i = 1; i <= 8; i++) {
-        const countKey = `count${i}`;
-        const savedCount = localStorage.getItem(countKey) || 0;
-        const countElement = document.querySelector(`td[data-id="${countKey}"]`);
-        if (countElement) {
-            countElement.innerText = savedCount; // Aggiorna il conteggio
-        }
-    }
-}
-
-// Funzione per salvare i contatori nel localStorage
-function saveCounts() {
-    document.querySelectorAll('td[data-id]').forEach(td => {
-        const id = td.getAttribute('data-id');
-        const count = parseInt(td.innerText);
-        localStorage.setItem(id, count); // Salva nel localStorage
+// Funzione per aggiornare la classifica
+function updateRanking() {
+    const rows = Array.from(document.querySelectorAll('#counterTable tr')).slice(1); // Ottieni tutte le righe tranne l'intestazione
+    rows.sort((a, b) => {
+        const countA = parseInt(a.querySelector('td[data-id]').innerText);
+        const countB = parseInt(b.querySelector('td[data-id]').innerText);
+        return countB - countA;
     });
+
+    // Riordina la tabella e aggiorna i numeri di classifica
+    const tableBody = document.querySelector('#counterTable tbody');
+    rows.forEach((row, index) => {
+        row.querySelector('td:first-child').innerText = index + 1; // Aggiorna il numero di classifica
+        // Mantieni i colori fissi
+        if (index === 0) {
+            row.classList.add('gold');
+            row.classList.remove('silver', 'bronze', 'green');
+        } else if (index === 1) {
+            row.classList.add('silver');
+            row.classList.remove('gold', 'bronze', 'green');
+        } else if (index === 2) {
+            row.classList.add('bronze');
+            row.classList.remove('gold', 'silver', 'green');
+        } else {
+            row.classList.add('green');
+            row.classList.remove('gold', 'silver', 'bronze');
+        }
+    });
+
+    // Aggiungi le righe riordinate di nuovo al body della tabella
+    rows.forEach(row => tableBody.appendChild(row));
 }
