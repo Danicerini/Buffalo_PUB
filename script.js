@@ -1,6 +1,6 @@
 const correctPassword = "1234"; // Password per incrementare e decrementare i contatori
-const SUPABASE_URL = 'https://tkgflpqtwclwlvxjngne.supabase.co'; // Sostituisci con la tua URL di Supabase
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRrZ2ZscHF0d2Nsd2x2eGpuZ25lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzAwMjg3MjMsImV4cCI6MjA0NTYwNDcyM30.sqveiFpu_jjLPT_68Q9LFe-Qqy2Mc6ZUo4li65l6EeM'; // Sostituisci con la tua API Key di Supabase
+const SUPABASE_URL = 'https://tkgflpqtwclwlvxjngne.supabase.co'; // URL di Supabase
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRrZ2ZscHF0d2Nsd2x2eGpuZ25lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzAwMjg3MjMsImV4cCI6MjA0NTYwNDcyM30.sqveiFpu_jjLPT_68Q9LFe-Qqy2Mc6ZUo4li65l6EeM'; // API Key di Supabase
 const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // Funzione per richiedere la password e incrementare il contatore
@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // Funzione per caricare i contatori dal database Supabase
 async function loadCounts() {
     const { data, error } = await supabase
-        .from('counters') // Sostituisci con il nome della tua tabella
+        .from('Counters') // Nome della tua tabella
         .select('*');
 
     if (error) {
@@ -74,10 +74,10 @@ async function loadCounts() {
     }
 
     data.forEach(record => {
-        const id = record.ID; // Usa 'ID' come chiave primaria
+        const id = record.ID; // Usa il campo ID della tua tabella
         const countElement = document.querySelector(`td[data-id="${id}"]`);
         if (countElement) {
-            countElement.innerText = record.Conteggio || 0; // Usa 'Conteggio' come nome del campo
+            countElement.innerText = record.Conteggio || 0; // Usa il campo Conteggio della tua tabella
         }
     });
     updateRanking(); // Aggiorna la classifica dopo il caricamento
@@ -95,8 +95,8 @@ async function saveCounts() {
 // Funzione per aggiornare i record nel database Supabase
 async function updateRecord(id, count) {
     const { error } = await supabase
-        .from('counters') // Sostituisci con il nome della tua tabella
-        .upsert({ ID: id, Conteggio: count }); // Usa 'ID' e 'Conteggio' come nomi dei campi
+        .from('Counters') // Nome della tua tabella
+        .upsert({ ID: id, Conteggio: count }); // Usa i nomi dei campi corretti
 
     if (error) {
         console.error('Error saving counter data:', error);
