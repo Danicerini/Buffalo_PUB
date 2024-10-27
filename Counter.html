@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="foto/favicon-32x32.png" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>THE Buffalo PUB</title>
+</head>
+
+<body class="Body_counter">
+
+    <header>
+        <h1>The Buffalo_PUB</h1>
+    </header>
+    
+    <nav>
+         <ul>
+            <li><a href="index.html">Home🏠</a></li>
+            <li><a href="Beer.html">Beer🍺</a></li>
+            <li class="active"><a href="Counter.html">Counter🎰</a></li>
+            <li><a href="Other.html">Other➕</a></li>
+        </ul>
+    </nav>
+
+    <table id="counterTable">
+        <tr>
+            <th>N°</th>
+            <th>Name</th>
+            <th>Count</th>
+            <th>Action</th>
+        </tr>
+        <tr class="gold">
+            <td>1</td>
+            <td>Loris</td>
+            <td data-id="count1">0</td>
+            <td class="action-buttons">
+                <button onclick="requestPasswordAndIncrement('count1')">+</button>
+                <button onclick="requestPasswordAndDecrement('count1')">-</button>
+            </td>
+        </tr>
+        <tr class="silver">
+            <td>2</td>
+            <td>Ghiva</td>
+            <td data-id="count2">0</td>
+            <td class="action-buttons">
+                <button onclick="requestPasswordAndIncrement('count2')">+</button>
+                <button onclick="requestPasswordAndDecrement('count2')">-</button>
+            </td>
+        </tr>
+        <tr class="bronze">
+            <td>3</td>
+            <td>Orio</td>
+            <td data-id="count3">0</td>
+            <td class="action-buttons">
+                <button onclick="requestPasswordAndIncrement('count3')">+</button>
+                <button onclick="requestPasswordAndDecrement('count3')">-</button>
+            </td>
+        </tr>
+        <tr class="green">
+            <td>4</td>
+            <td>Pizzi</td>
+            <td data-id="count4">0</td>
+            <td class="action-buttons">
+                <button onclick="requestPasswordAndIncrement('count4')">+</button>
+                <button onclick="requestPasswordAndDecrement('count4')">-</button>
+            </td>
+        </tr>
+        <tr class="green">
+            <td>5</td>
+            <td>Sini</td>
+            <td data-id="count5">0</td>
+            <td class="action-buttons">
+                <button onclick="requestPasswordAndIncrement('count5')">+</button>
+                <button onclick="requestPasswordAndDecrement('count5')">-</button>
+            </td>
+        </tr>
+        <tr class="green">
+            <td>6</td>
+            <td>Nene</td>
+            <td data-id="count6">0</td>
+            <td class="action-buttons">
+                <button onclick="requestPasswordAndIncrement('count6')">+</button>
+                <button onclick="requestPasswordAndDecrement('count6')">-</button>
+            </td>
+        </tr>
+        <tr class="green">
+            <td>7</td>
+            <td>Pippo</td>
+            <td data-id="count7">0</td>
+            <td class="action-buttons">
+                <button onclick="requestPasswordAndIncrement('count7')">+</button>
+                <button onclick="requestPasswordAndDecrement('count7')">-</button>
+            </td>
+        </tr>
+        <tr class="green">
+            <td>8</td>
+            <td>Kaki</td>
+            <td data-id="count8">0</td>
+            <td class="action-buttons">
+                <button onclick="requestPasswordAndIncrement('count8')">+</button>
+                <button onclick="requestPasswordAndDecrement('count8')">-</button>
+            </td>
+        </tr>
+    </table>
+
+    <footer>
+        <p>&copy; Breeders, Tutti i diritti riservati</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

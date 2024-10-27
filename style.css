@@ -1,0 +1,185 @@
+html, body{
+    margin: 0;
+    height: 100%;
+}
+
+body{
+    background-image: url("foto/ireland.webp");
+    display: flex;
+    flex-direction: column;
+    background-position: center;
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+.Body_counter{
+    background-image: url("foto/foto_compagnia1.jpeg");
+}
+
+table {
+    width: 50%;
+    margin: 20px auto;
+    border-collapse: collapse;
+}
+td, th {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+.gold { background-color: rgba(255, 217, 0, 0.5); }
+.silver { background-color: rgba(192, 192, 192, 0.5); }
+.bronze { background-color: rgba(197, 115, 32, 0.5); }
+.green { background-color: rgba(0, 255, 0, 0.3); }
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.action-buttons button {
+    background-color: rgba(0, 128, 0, 0.613);
+    color: white;
+    font-size: 16px;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    margin: 2px 0;
+    cursor: pointer;
+    width: 100%;
+}
+.action-buttons button:hover {
+    background-color: rgba(0, 100, 0, 0.476);
+}
+
+#counterTable {
+    font-family: fantasy;
+}
+
+header{
+    font-family: fantasy;
+    text-align: center;
+    background-color: rgb(59, 243, 42);
+}
+
+nav {
+    margin-left: 10px;
+    margin-right: 10px;
+    display: flex;
+    justify-content: center; /* Centra il nav nella pagina */
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+    justify-content: center;
+    gap: 20px;
+    padding: 0;
+}
+
+nav ul li {
+    font-size: 30px;
+    font-family: fantasy;
+    background-color: green;
+    padding: 3px;
+    border-radius: 7px;
+}
+
+nav ul li:hover{
+    background-color: rgb(28, 248, 72);
+}
+
+nav a:hover{
+    color: green;
+}
+
+nav a {
+    color: rgb(28, 248, 72);
+    text-decoration: none;
+} 
+
+h4{
+    width: fit-content; /* Limita la larghezza al testo */
+    margin: 20px auto; /* Centra l'elemento nella pagina */
+    padding: 0 10px; /* Aggiunge spazio ai lati del testo */
+    font-size: 30px;
+    background-color: rgba(0, 128, 0, 0.672);
+    border-radius: 10px;
+}
+
+main{
+    margin: 0 10px; /* Margini di 10px a destra e sinistra */
+    max-width: 100%;
+    text-align: center;
+    border: 10px;
+}
+
+main ul{
+    font-size: 30px;
+    background-color: rgba(167, 167, 167, 0.667);
+    max-width: 200px;
+    border-radius: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    list-style: decimal;
+    margin: 0 auto; /* Centra l'intero elenco */
+    padding-left: 100px;
+    padding-right: 100px;
+    display: inline-block; /* Assicura che l'elenco stesso sia centrato */
+    text-align: center;
+}
+
+.Buffalo_team, .Buffalo_PUB{
+    width: 100%;
+    max-width: 800px;
+    height: auto;
+}
+
+footer{
+    font-size: 12px;
+    font-family: fantasy;
+    background-color: green;
+    text-align: center;
+    margin-top: 30px
+}
+
+@media (max-width: 768px) {
+
+    nav ul li{
+        font-size: 15px;
+    }
+
+    h4{
+        font-size: large;
+    }
+
+    nav ul{
+        gap: 10px;
+    }
+
+    main ul{
+        font-size: medium;
+        padding-left: 70px;
+        padding-right: 70px;
+    }
+
+    .action-buttons button {
+        font-size: 14px;
+        padding: 6px 12px;
+    }
+
+}
+
+@media (max-width: 400px) {
+
+    nav ul li{
+        font-size: 11px;
+    }
+
+}
+
+@media (max-width: 261px) {
+
+    nav ul li{
+        font-size: 7px;
+    }
+
+}
