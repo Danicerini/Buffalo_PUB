@@ -1,12 +1,7 @@
-import { createClient } from '@supabase/supabase-js'
-const supabaseUrl = 'https://tkgflpqtwclwlvxjngne.supabase.co'
-const supabaseKey = process.env.SUPABASE_KEY
-const supabase = createClient(supabaseUrl, supabaseKey)
-
 // Configurazione Supabase
 const SUPABASE_URL = 'https://tkgflpqtwclwlvxjngne.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRrZ2ZscHF0d2Nsd2x2eGpuZ25lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzAwMjg3MjMsImV4cCI6MjA0NTYwNDcyM30.sqveiFpu_jjLPT_68Q9LFe-Qqy2Mc6ZUo4li65l6EeM';
-
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const correctPassword = "1234"; // Password per incrementare e decrementare
 
