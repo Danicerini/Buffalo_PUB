@@ -1,69 +1,96 @@
-const correctPassword = "1234"; // Password per incrementare e decrementare i contatori
+import { createClient } from '@supabase/supabase-js'
+const supabaseUrl = 'https://tkgflpqtwclwlvxjngne.supabase.co'
+const supabaseKey = process.env.SUPABASE_KEY
 
-// Funzione per richiedere la password e incrementare il contatore
-function requestPasswordAndIncrement(id) {
-    if (!sessionStorage.getItem('isAuthorized')) {
-        const userPassword = prompt("Enter the password to increment:");
-        if (userPassword === correctPassword) {
-            sessionStorage.setItem('isAuthorized', 'true'); // Salva l'autorizzazione per la sessione
-            incrementCount(id);
-            updateRanking();
-        } else {
-            alert("Password incorrect.");
-        }
-    } else {
-        incrementCount(id);
-        updateRanking();
-    }
-}
+// Configurazione Supabase
+const SUPABASE_URL = 'https://tkgflpqtwclwlvxjngne.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRrZ2ZscHF0d2Nsd2x2eGpuZ25lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzAwMjg3MjMsImV4cCI6MjA0NTYwNDcyM30.sqveiFpu_jjLPT_68Q9LFe-Qqy2Mc6ZUo4li65l6EeM';
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// Funzione per richiedere la password e decrementare il contatore
-function requestPasswordAndDecrement(id) {
-    if (!sessionStorage.getItem('isAuthorized')) {
-        const userPassword = prompt("Enter the password to decrement:");
-        if (userPassword === correctPassword) {
-            sessionStorage.setItem('isAuthorized', 'true'); // Salva l'autorizzazione per la sessione
-            decrementCount(id);
-            updateRanking();
-        } else {
-            alert("Password incorrect.");
-        }
-    } else {
-        decrementCount(id);
-        updateRanking();
-    }
-}
+const correctPassword = "1234"; // Password per incrementare e decrementare
 
 // Funzione per incrementare il contatore
-function incrementCount(id) {
+async function incrementCount(id) {
     const countElement = document.querySelector(`td[data-id="${id}"]`);
     let currentCount = parseInt(countElement.innerText);
     currentCount++;
     countElement.innerText = currentCount;
-    localStorage.setItem(id, currentCount);
+    await saveCounts(id, currentCount); // Salva il conteggio aggiornato
 }
 
 // Funzione per decrementare il contatore
-function decrementCount(id) {
+async function decrementCount(id) {
     const countElement = document.querySelector(`td[data-id="${id}"]`);
     let currentCount = parseInt(countElement.innerText);
     if (currentCount > 0) {
         currentCount--;
         countElement.innerText = currentCount;
-        localStorage.setItem(id, currentCount);
+        await saveCounts(id, currentCount); // Salva il conteggio aggiornato
     }
 }
 
-// Carica i valori dei contatori e aggiorna la classifica all'avvio della pagina
-document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('td[data-id]').forEach(td => {
-        const savedCount = localStorage.getItem(td.getAttribute('data-id'));
-        if (savedCount) {
-            td.innerText = savedCount;
+// Richiede la password solo una volta per sessione
+function requestPasswordAndIncrement(id) {
+    if (!sessionStorage.getItem('isAuthorized')) {
+        const userPassword = prompt("Enter the password:");
+        if (userPassword === correctPassword) {
+            sessionStorage.setItem('isAuthorized', 'true');
+            incrementCount(id);
+        } else {
+            alert("Password incorrect.");
+        }
+    } else {
+        incrementCount(id);
+    }
+}
+
+function requestPasswordAndDecrement(id) {
+    if (!sessionStorage.getItem('isAuthorized')) {
+        const userPassword = prompt("Enter the password:");
+        if (userPassword === correctPassword) {
+            sessionStorage.setItem('isAuthorized', 'true');
+            decrementCount(id);
+        } else {
+            alert("Password incorrect.");
+        }
+    } else {
+        decrementCount(id);
+    }
+}
+
+// Carica i valori dei contatori all'avvio
+document.addEventListener('DOMContentLoaded', loadCounts);
+
+// Funzione per caricare i contatori da Supabase
+async function loadCounts() {
+    const { data, error } = await supabase
+        .from('Counters')
+        .select('ID, Conteggio');
+    
+    if (error) {
+        console.error('Errore nel caricamento dei contatori:', error);
+        return;
+    }
+
+    data.forEach(record => {
+        const countElement = document.querySelector(`td[data-id="${record.ID}"]`);
+        if (countElement) {
+            countElement.innerText = record.Conteggio || 0;
         }
     });
     updateRanking();
-});
+}
+
+// Salva il conteggio aggiornato su Supabase
+async function saveCounts(id, count) {
+    const { error } = await supabase
+        .from('Counters')
+        .upsert({ ID: id, Conteggio: count });
+    
+    if (error) {
+        console.error('Errore nel salvataggio del contatore:', error);
+    }
+}
 
 // Funzione per aggiornare la classifica
 function updateRanking() {
@@ -74,26 +101,15 @@ function updateRanking() {
         return countB - countA;
     });
 
-    // Riordina la tabella e aggiorna i numeri di classifica
     const tableBody = document.querySelector('#counterTable tbody');
     rows.forEach((row, index) => {
         row.querySelector('td:first-child').innerText = index + 1; // Aggiorna il numero di classifica
-        // Mantieni i colori fissi
-        if (index === 0) {
-            row.classList.add('gold');
-            row.classList.remove('silver', 'bronze', 'green');
-        } else if (index === 1) {
-            row.classList.add('silver');
-            row.classList.remove('gold', 'bronze', 'green');
-        } else if (index === 2) {
-            row.classList.add('bronze');
-            row.classList.remove('gold', 'silver', 'green');
-        } else {
-            row.classList.add('green');
-            row.classList.remove('gold', 'silver', 'bronze');
-        }
+        if (index === 0) row.classList.add('gold');
+        else if (index === 1) row.classList.add('silver');
+        else if (index === 2) row.classList.add('bronze');
+        else row.classList.add('green');
     });
 
-    // Aggiungi le righe riordinate di nuovo al body della tabella
+    // Riaggiunge le righe riordinate al body della tabella
     rows.forEach(row => tableBody.appendChild(row));
 }
